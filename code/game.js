@@ -27,19 +27,19 @@ function Level(plan) {
       // Get the type from that character in the string. It can be 'x', '!' or ' '
       // If the character is ' ', assign null.
 
-		var ch = line[x], fieldType = null;
-		var Actor = actorChars[ch];
+	  var ch = line[x], fieldType = null;
+	  var Actor = actorChars[ch];
       // Use if and else to handle the three cases
-		if (Actor)
+	  if (Actor)
         // Create a new actor at that grid position.
-			this.actors.push(new Actor(new Vector(x, y), ch));
-		else if (ch == "x")
-			fieldType = "wall";
+	    this.actors.push(new Actor(new Vector(x, y), ch));
+	  else if (ch == "x")
+		fieldType = "wall";
       // Because there is a third case (space ' '), use an "else if" instead of "else"
-		else if (ch == "!")
-			fieldType = "lava";
-		else if (ch == "y");
-			fieldType = "floater";
+	  else if (ch == "!")
+		fieldType = "lava";
+	  else if (ch == "y")
+		fieldType = "floater";
 
       // "Push" the fieldType, which is a string, onto the gridLine array (at the end).
       gridLine.push(fieldType);

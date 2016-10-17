@@ -26,7 +26,7 @@ function Level(plan) {
       else if (ch == "!")
         fieldType = "lava";
 	  else if (ch == "y")
-		fieldtype = "floater";
+		fieldType = "floater";
 
       // "Push" the fieldType, which is a string, onto the gridLine array (at the end).
       gridLine.push(fieldType);

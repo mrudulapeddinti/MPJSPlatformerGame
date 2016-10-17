@@ -6,21 +6,9 @@
 .wall          { background: rgb(35, 35, 45);   }
 .floater       { background: rgb(130, 70, 20); }
 
-.actor  { position: absolute;  }
-.coin   { background: rgb(110, 200, 260); }
-.player { background: rgb(50, 170, 220); }
-
 .game {
   overflow: hidden;
   max-width: 600px;
   max-height: 450px;
   position: relative;
-}
-
-.lost .player {
-  background: rgb(30, 30, 30);
-}
-.won .player {
-  background: rgb(240, 240, 90);
-  box-shadow: -4px -7px 8px white, 4px -7px 8px white;
 }

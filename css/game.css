@@ -6,6 +6,10 @@
 .wall          { background: rgb(35, 35, 45);   }
 .floater       { background: rgb(130, 70, 20); }
 
+.actor  { position: absolute;  }
+.player { background: rgb(50, 180, 250); }
+.playerLost { background: rgb(0, 0, 0); }
+
 .game {
   overflow: hidden;
   max-width: 600px;

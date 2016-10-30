@@ -1,7 +1,7 @@
 // Map each class of actor to a character
 var actorChars = {
   "@": Player,
-  "o": Coin // A coin will wobble up and down
+  "o": Coin, // A coin will wobble up and down
   "z": Poison
 };
 
@@ -288,7 +288,7 @@ var jumpSpeed = 17;
 
 Player.prototype.moveY = function(step, level, keys) {
   // Accelerate player downward (always)
-  this.speed.y += step * gravity;;
+  this.speed.y += step * gravity;
   var motion = new Vector(0, this.speed.y * step);
   var newPos = this.pos.plus(motion);
   var obstacle = level.obstacleAt(newPos, this.size);
@@ -297,9 +297,14 @@ Player.prototype.moveY = function(step, level, keys) {
   if (obstacle) {
     if (keys.up && this.speed.y > 0)
       this.speed.y = -jumpSpeed;
+    else if (obstacle == "lava") {
+	  this.pos = new Vector(5,10); 
+	}
     else
       this.speed.y = 0;
-  } else {
+    
+  } 
+  else {
     this.pos = newPos;
   }
 };
@@ -318,10 +323,12 @@ Level.prototype.playerTouched = function(type, actor) {
     this.actors = this.actors.filter(function(other) {
       return other != actor;
     });
+  }
   else if (type == "poison") {
 	this.actors = this.actors.filter(function(other) {
-      return other != actor;  
+      return other != actor; 
     });
+	this.player.pos = new Vector(5,10);
   }
 };
 

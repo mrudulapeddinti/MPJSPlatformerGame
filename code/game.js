@@ -1,3 +1,10 @@
+// Map each class of actor to a character
+var actorChars = {
+  "@": Player,
+  "o": Coin // A coin will wobble up and down
+  "z": Poison
+};
+
 function Level(plan) {
   // Use the length of a single row to set the width of the level
   this.width = plan[0].length;
@@ -7,6 +14,9 @@ function Level(plan) {
 
   // Store the individual tiles in our own, separate array
   this.grid = [];
+
+  // Store a list of actors to process each frame
+  this.actors = [];
 
   // Loop through each row in the plan, creating an array in our grid
   for (var y = 0; y < this.height; y++) {
@@ -18,10 +28,11 @@ function Level(plan) {
       // If the character is ' ', assign null.
 
       var ch = line[x], fieldType = null;
+      var Actor = actorChars[ch];
       // Use if and else to handle the three cases
-      if (ch==='@')
-        // Create a new player at that grid position.
-        this.player = new Player(new Vector(x, y));
+      if (Actor)
+        // Create a new actor at that grid position.
+        this.actors.push(new Actor(new Vector(x, y), ch));
       else if (ch == "x")
         fieldType = "wall";
       // Because there is a third case (space ' '), use an "else if" instead of "else"
@@ -36,6 +47,11 @@ function Level(plan) {
     // Push the entire row onto the array of rows.
     this.grid.push(gridLine);
   }
+
+  // Find and assign the player character and assign to Level.player
+  this.player = this.actors.filter(function(actor) {
+    return actor.type == "player";
+  })[0];
 }
 
 function Vector(x, y) {
@@ -60,6 +76,23 @@ function Player(pos) {
   this.speed = new Vector(0, 0);
 }
 Player.prototype.type = "player";
+
+// Add a new actor type as a class
+function Coin(pos) {
+  this.basePos = this.pos = pos.plus(new Vector(0.2, 0.1));
+  this.size = new Vector(0.6, 0.6);
+  // Make it go back and forth in a sine wave.
+  this.wobble = Math.random() * Math.PI * 2;
+}
+Coin.prototype.type = "coin";
+
+function Poison(pos) {
+  this.basePos = this.pos = pos.plus(new Vector(0.2, 0.1));
+  this.size = new Vector(0.6, 0.6);
+  // Make it go back and forth in a sine wave.
+  this.wobble = Math.random() * Math.PI * 2;
+}
+Poison.prototype.type = "poison";
 
 // Helper function to easily create an element of a type provided 
 // and assign it a class.
@@ -104,25 +137,27 @@ DOMDisplay.prototype.drawBackground = function() {
   return table;
 };
 
-// Draw the player agent
-DOMDisplay.prototype.drawPlayer = function() {
+// All actors are above (in front of) background elements.  
+DOMDisplay.prototype.drawActors = function() {
   // Create a new container div for actor dom elements
   var wrap = elt("div");
 
-  var actor = this.level.player;
-  var rect = wrap.appendChild(elt("div",
+  // Create a new element for each actor each frame
+  this.level.actors.forEach(function(actor) {
+    var rect = wrap.appendChild(elt("div",
                                     "actor " + actor.type));
-  rect.style.width = actor.size.x * scale + "px";
-  rect.style.height = actor.size.y * scale + "px";
-  rect.style.left = actor.pos.x * scale + "px";
-  rect.style.top = actor.pos.y * scale + "px";
+    rect.style.width = actor.size.x * scale + "px";
+    rect.style.height = actor.size.y * scale + "px";
+    rect.style.left = actor.pos.x * scale + "px";
+    rect.style.top = actor.pos.y * scale + "px";
+  });
   return wrap;
 };
 
 DOMDisplay.prototype.drawFrame = function() {
   if (this.actorLayer)
     this.wrap.removeChild(this.actorLayer);
-  this.actorLayer = this.wrap.appendChild(this.drawPlayer());
+  this.actorLayer = this.wrap.appendChild(this.drawActors());
   this.scrollPlayerIntoView();
 };
 
@@ -152,21 +187,48 @@ DOMDisplay.prototype.scrollPlayerIntoView = function() {
     this.wrap.scrollTop = center.y + margin - height;
 };
 
+// Return the first obstacle found given a size and position.
 Level.prototype.obstacleAt = function(pos, size) {
-	var xStart = Math.floor(pos.x);
-	var xEnd = Math.ceil(pos.x + size.x);
-	var yStart = Math.floor(pos.y);
-	var yEnd = Math.ceil(pos.y + size.y);
-	
-	if (xStart < 0 || xEnd > this.width || yStart < 0 || yEnd > this.height)
-		return "wall";
-	
-	for (var y = yStart; y < yEnd; y++) {
-		for (var x = xStart; x < xEnd; x++) {
-			var fieldType = this.grid[y][x];
-			if (fieldType) return fieldType;
-		}
-	}
+  // Find the "coordinate" of the tile representing left bound
+  var xStart = Math.floor(pos.x);
+  // right bound
+  var xEnd = Math.ceil(pos.x + size.x);
+  // top bound
+  var yStart = Math.floor(pos.y);
+  // Bottom bound
+  var yEnd = Math.ceil(pos.y + size.y);
+
+  // Consider the sides and top and bottom of the level as walls
+  if (xStart < 0 || xEnd > this.width || yStart < 0 || yEnd > this.height)
+    return "wall";
+
+  // Check each grid position starting at yStart, xStart
+  // for a possible obstacle (non null value)
+  for (var y = yStart; y < yEnd; y++) {
+    for (var x = xStart; x < xEnd; x++) {
+      var fieldType = this.grid[y][x];
+      if (fieldType) return fieldType;
+    }
+  }
+};
+
+// Collision detection for actors is handled separately from 
+// tiles. 
+Level.prototype.actorAt = function(actor) {
+  // Loop over each actor in our actors list and compare the 
+  // boundary boxes for overlaps.
+  for (var i = 0; i < this.actors.length; i++) {
+    var other = this.actors[i];
+    // if the other actor isn't the acting actor
+    if (other != actor &&
+        actor.pos.x + actor.size.x > other.pos.x &&
+        actor.pos.x < other.pos.x + other.size.x &&
+        actor.pos.y + actor.size.y > other.pos.y &&
+        actor.pos.y < other.pos.y + other.size.y)
+      // check if the boundaries overlap by comparing all sides for
+      // overlap and return the other actor if found
+      return other;
+  }
 };
 
 // Update simulation each step based on keys & step size
@@ -175,11 +237,30 @@ Level.prototype.animate = function(step, keys) {
   // Ensure each is maximum 100 milliseconds 
   while (step > 0) {
     var thisStep = Math.min(step, maxStep);
-      this.player.act(thisStep, this, keys);
+    this.actors.forEach(function(actor) {
+      // Allow each actor to act on their surroundings
+      actor.act(thisStep, this, keys);
+    }, this);
    // Do this by looping across the step size, subtracing either the
    // step itself or 100 milliseconds
     step -= thisStep;
   }
+};
+
+var maxStep = 0.05;
+
+var wobbleSpeed = 8, wobbleDist = 0.07;
+
+Coin.prototype.act = function(step) {
+  this.wobble += step * wobbleSpeed;
+  var wobblePos = Math.sin(this.wobble) * wobbleDist;
+  this.pos = this.basePos.plus(new Vector(0, wobblePos));
+};
+
+Poison.prototype.act = function(step) {
+  this.wobble += step * wobbleSpeed;
+  var wobblePos = Math.sin(this.wobble) * wobbleDist;
+  this.pos = this.basePos.plus(new Vector(0, wobblePos));	
 };
 
 var maxStep = 0.05;
@@ -192,45 +273,60 @@ Player.prototype.moveX = function(step, level, keys) {
   if (keys.right) this.speed.x += playerXSpeed;
 
   var motion = new Vector(this.speed.x * step, 0);
+  // Find out where the player character will be in this frame
   var newPos = this.pos.plus(motion);
+  // Find if there's an obstacle there
   var obstacle = level.obstacleAt(newPos, this.size);
-  if (obstacle != "wall")
-	this.pos = newPos;
+
+  // Move if there's not a wall there.
+  if(obstacle!="wall")
+    this.pos = newPos;
 };
 
-var gravity = 15;
-var jumpSpeed = 20;
-var playerYSpeed = 15;
+var gravity = 30;
+var jumpSpeed = 17;
 
 Player.prototype.moveY = function(step, level, keys) {
-  this.speed.y += step * gravity;
-  
+  // Accelerate player downward (always)
+  this.speed.y += step * gravity;;
   var motion = new Vector(0, this.speed.y * step);
   var newPos = this.pos.plus(motion);
-  
   var obstacle = level.obstacleAt(newPos, this.size);
-  if(obstacle) {
-	  if (keys.up && this.speed.y > 0) 
-		  this.speed.y = -jumpSpeed;
-	  else if (obstacle == "lava")
-		  this.pos = new Vector(5, 10) 	 
-	  else 
-		  this.speed.y = 0;
-  } 
-  else {
-	  this.pos = newPos;
+  // The floor is also an obstacle -- only allow players to 
+  // jump if they are touching some obstacle.
+  if (obstacle) {
+    if (keys.up && this.speed.y > 0)
+      this.speed.y = -jumpSpeed;
+    else
+      this.speed.y = 0;
+  } else {
+    this.pos = newPos;
   }
-
 };
 
 Player.prototype.act = function(step, level, keys) {
   this.moveX(step, level, keys);
   this.moveY(step, level, keys);
+
+  var otherActor = level.actorAt(this);
+  if (otherActor)
+    level.playerTouched(otherActor.type, otherActor);
 };
 
+Level.prototype.playerTouched = function(type, actor) {
+  if (type == "coin") {
+    this.actors = this.actors.filter(function(other) {
+      return other != actor;
+    });
+  else if (type == "poison") {
+	this.actors = this.actors.filter(function(other) {
+      return other != actor;  
+    });
+  }
+};
 
 // Arrow key codes for readibility
-var arrowCodes = {37: "left", 38: "up", 39: "right", 40: "down"};
+var arrowCodes = {37: "left", 38: "up", 39: "right"};
 
 // Translate the codes pressed from a key event
 function trackKeys(codes) {

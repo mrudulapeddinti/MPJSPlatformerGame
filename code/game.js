@@ -465,7 +465,7 @@ function runGame(plans, Display) {
     // Pass in a reference to Display function, DOMDisplay (in index.html).
     runLevel(new Level(plans[n]), Display, function(status) {
 		if (status == "lost")
-			startlevel(n);
+			startLevel(n);
 		else if (n < plans.length - 1)
 			startLevel(n + 1);
 		else 

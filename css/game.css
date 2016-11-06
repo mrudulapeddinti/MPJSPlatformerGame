@@ -9,7 +9,7 @@
 .actor  { position: absolute;  }
 .player { background: rgb(50, 180, 250); }
 .coin { background: rgb(250, 0, 250); }
-.poison { background: rgb(255, 0, 0); }
+.jump { background: rgb(255, 0, 0); }
 
 .game {
   overflow: hidden;

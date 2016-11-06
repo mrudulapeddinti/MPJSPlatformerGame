@@ -351,6 +351,12 @@ Level.prototype.playerTouched = function(type, actor) {
     this.actors = this.actors.filter(function(other) {
       return other != actor;
     });
+  if (!this.actors.some(function(actor) {
+	  return actor.type == "coin";
+  })) {
+  this.status = "won";
+  this.finishDelay = 1;
+	}
   }
   else if (type == "poison") {
 	this.actors = this.actors.filter(function(other) {
@@ -358,12 +364,6 @@ Level.prototype.playerTouched = function(type, actor) {
     });
 	this.player.pos = new Vector(5,10);
   }
-  if (!this.actors.some(function(actor) {
-	  return actor.type == "coin";
-  })) {
-  this.status = "won";
-  this.finishDelay = 1;
-}
 };
 
 // Arrow key codes for readibility

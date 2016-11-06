@@ -245,6 +245,8 @@ Level.prototype.actorAt = function(actor) {
 // Update simulation each step based on keys & step size
 Level.prototype.animate = function(step, keys) {
 
+	if (this.status != null)
+		this.finishDelay -= step;
   // Ensure each is maximum 100 milliseconds 
   while (step > 0) {
     var thisStep = Math.min(step, maxStep);
@@ -290,8 +292,10 @@ Player.prototype.moveX = function(step, level, keys) {
   var obstacle = level.obstacleAt(newPos, this.size);
 
   // Move if there's not a wall there.
-  if(obstacle!="wall")
-    this.pos = newPos;
+  if (obstacle)
+	  level.playerTouched(obstacle);
+  else 
+	  this.pos = newPos;
 };
 
 var gravity = 30;
@@ -305,11 +309,7 @@ Player.prototype.moveY = function(step, level, keys) {
   var obstacle = level.obstacleAt(newPos, this.size);
   // The floor is also an obstacle -- only allow players to 
   // jump if they are touching some obstacle.
-  if (obstacle)
-	  level.playerTouched(obstacle);
-  else 
-	  this.pos = newPos;
-};
+  
 
   if (obstacle) {
 	level.playerTouched(obstacle);

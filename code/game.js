@@ -2,7 +2,7 @@
 var actorChars = {
   "@": Player,
   "o": Coin, // A coin will wobble up and down
-  "z": Poison,
+  "z": Jump,
   "=": Lava, "|": Lava, "v": Lava
 };
 
@@ -108,13 +108,13 @@ function Lava(pos, ch) {
 
 Lava.prototype.type = "lava";
 
-function Poison(pos) {
+function Jump(pos) {
   this.basePos = this.pos = pos.plus(new Vector(0.2, 0.1));
   this.size = new Vector(0.6, 0.6);
   // Make it go back and forth in a sine wave.
   this.wobble = Math.random() * Math.PI * 2;
 }
-Poison.prototype.type = "poison";
+Jump.prototype.type = "jump";
 
 // Helper function to easily create an element of a type provided 
 // and assign it a class.
@@ -299,7 +299,7 @@ Coin.prototype.act = function(step) {
   this.pos = this.basePos.plus(new Vector(0, wobblePos));
 };
 
-Poison.prototype.act = function(step) {
+Jump.prototype.act = function(step) {
   this.wobble += step * wobbleSpeed;
   var wobblePos = Math.sin(this.wobble) * wobbleDist;
   this.pos = this.basePos.plus(new Vector(0, wobblePos));	
@@ -384,11 +384,11 @@ Level.prototype.playerTouched = function(type, actor) {
   this.finishDelay = 1;
 	}
   }
-  else if (type == "poison") {
+  else if (type == "jump") {
 	this.actors = this.actors.filter(function(other) {
       return other != actor; 
     });
-	this.player.pos = new Vector(5,10);
+	jumpSpeed = 25;
   }
 };
 

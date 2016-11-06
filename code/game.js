@@ -388,8 +388,12 @@ Level.prototype.playerTouched = function(type, actor) {
 	this.actors = this.actors.filter(function(other) {
       return other != actor; 
     });
-	gravity = 25;
+	gravity = 20;
 	jumpSpeed = 25;
+	if (status == "won" || status == "lost") {
+		gravity = 30;
+		jumpSpeed = 17;
+	}
   }
 };
 

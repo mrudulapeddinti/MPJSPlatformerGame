@@ -2,7 +2,7 @@
 var actorChars = {
   "@": Player,
   "o": Coin, // A coin will wobble up and down
-  "z": Poison
+  "z": Poison,
   "=": Lava, "|": Lava, "v": Lava
 };
 

@@ -17,3 +17,11 @@
   max-height: 450px;
   position: relative;
 }
+
+.lost .player {
+	background: rgb(20, 50, 70);
+}
+.won .player {
+	background: rgb(250, 250, 150);
+	box-shadow: -4px -7px 8px white, 4px -7px 8px white;
+}

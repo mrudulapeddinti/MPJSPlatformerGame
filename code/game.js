@@ -41,6 +41,8 @@ function Level(plan) {
         fieldType = "lava";
 	  else if (ch == "y")
 		fieldType = "floater";
+	  else if (ch == "p")
+		fieldType = "portal";
 
       // "Push" the fieldType, which is a string, onto the gridLine array (at the end).
       gridLine.push(fieldType);
@@ -390,11 +392,7 @@ Level.prototype.playerTouched = function(type, actor) {
     });
 	gravity = 20;
 	jumpSpeed = 25;
-	if (status == "won" || status == "lost") {
-		gravity = 30;
-		jumpSpeed = 17;
 	}
-  }
 };
 
 // Arrow key codes for readibility
@@ -471,8 +469,11 @@ function runGame(plans, Display) {
     runLevel(new Level(plans[n]), Display, function(status) {
 		if (status == "lost")
 			startLevel(n);
-		else if (n < plans.length - 1)
+		else if (n < plans.length - 1) {
 			startLevel(n + 1);
+			jumpSpeed = 17;
+			gravity = 30;
+		}
 		else 
 			console.log("You win!");
 	});

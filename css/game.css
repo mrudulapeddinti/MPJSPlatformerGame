@@ -5,11 +5,12 @@
 .lava          { background: rgb(100, 240, 0); }
 .wall          { background: rgb(35, 35, 45);   }
 .floater       { background: rgb(130, 70, 20); }
+.portal        { background: rgb(255, 0, 0); }
 
 .actor  { position: absolute;  }
 .player { background: rgb(50, 180, 250); }
 .coin { background: rgb(250, 0, 250); }
-.jump { background: rgb(255, 0, 0); }
+.jump { background: rgb(255, 0, 255); }
 
 .game {
   overflow: hidden;

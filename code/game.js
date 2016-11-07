@@ -43,6 +43,8 @@ function Level(plan) {
 		fieldType = "floater";
 	  else if (ch == "p")
 		fieldType = "portal";
+	  else if (ch == "e")
+		fieldType = "end";
 
       // "Push" the fieldType, which is a string, onto the gridLine array (at the end).
       gridLine.push(fieldType);
@@ -375,17 +377,17 @@ Level.prototype.playerTouched = function(type, actor) {
 	this.status = "lost";
     this.finishDelay = 1;	
   }
+  
   else if (type == "coin") {
     this.actors = this.actors.filter(function(other) {
       return other != actor;
     });
-  if (!this.actors.some(function(actor) {
-	  return actor.type == "coin";
-  })) {
+  }
+  if (type == "end") {
   this.status = "won";
   this.finishDelay = 1;
 	}
-  }
+	
   else if (type == "jump") {
 	this.actors = this.actors.filter(function(other) {
       return other != actor; 
@@ -393,6 +395,10 @@ Level.prototype.playerTouched = function(type, actor) {
 	gravity = 20;
 	jumpSpeed = 25;
 	}
+  else if (type == "portal") {
+	  this.player.pos = new Vector (5, 15); 
+  }
+	
 };
 
 // Arrow key codes for readibility

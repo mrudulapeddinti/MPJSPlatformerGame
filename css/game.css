@@ -1,16 +1,22 @@
-.background    { background: rgb(110, 15, 5);
+.background    { background-image: url("wallTile.jpg");
                  table-layout: fixed;
                  border-spacing: 0;   }
 .background td { padding: 0;          }
-.lava          { background: rgb(100, 240, 0); }
-.wall          { background: rgb(35, 35, 45);   }
-.floater       { background: rgb(130, 70, 20); }
-.portal        { background: rgb(255, 0, 0); }
+.lava          { background-image: url("Toxic.jpg");
+				 background-repeat: repeat-x; }
+.wall          { background-image: url("wallTile3.jpg");
+				 background-repeat: repeat-x; }
+.floater       { background-image: url("WoodFloater.jpg");
+				 background-repeat: repeat-x; }
+.portal        { background-image: url("Portal.png");
+				 background-repeat: repeat-x; }
+.end           { background-image: url("End.jpg");
+				 box-shadow: -4px -7px 8px white, 4px -7px 8px white; }
 
 .actor  { position: absolute;  }
-.player { background: rgb(50, 180, 250); }
-.coin { background: rgb(250, 0, 250); }
-.jump { background: rgb(255, 0, 255); }
+.player { background-image: url("Player.png"); }
+.coin { background-image: url("Coins.png"); }
+.jump { background-image: url("JumpBoost.png"); }
 
 .game {
   overflow: hidden;
@@ -20,9 +26,13 @@
 }
 
 .lost .player {
-	background: rgb(20, 50, 70);
+	background-image: url("PlayerLost.png");
+	box-shadow: -4px -7px 8px red, 4px -7px 8px red;
 }
 .won .player {
-	background: rgb(250, 250, 150);
+	background-image: url("PlayerWon.png");
 	box-shadow: -4px -7px 8px white, 4px -7px 8px white;
+}
+.playerJump { 
+	background: rgb(255,255, 0)
 }

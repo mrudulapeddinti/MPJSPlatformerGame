@@ -83,7 +83,7 @@ var GAME_LEVELS = [
    "           p  yyvyy        xxxxxxxxxx         pp xxxx        o      xxxx o o o o o o o o o o o o o o o o o o  ",
    "                       o o xxxxxxxxxx o o        xxxx       xxx!!!!!xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ",
    "                  o    xxxxxxxxxxxxxxyyyyy       xxxx o       xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ",
-   "                       xxxxxxxx                  xxxxyy                                xxxxxxxxxxxxxxxxxxxxxxx ",
+   "                       xxxxxxxx                  xxxxyy                               xxxxxxxxxxxxxxxxxxxxxxx ",
    "           o  o      yyxxxxxxxx  o  o                                     o  o        xxxxxxxxxxxxxxxxxxxxxxx ",
    "                 yy    xxxxxxxx  o  o                   o oyy                         xxxxxxxxxxxxxxxxxxxxxxx ",
    "                       xxxxxxxx  o  o        o o o                  o o o      o o o  xxxxxxxxxxxxxxxxxxxxxxx ",

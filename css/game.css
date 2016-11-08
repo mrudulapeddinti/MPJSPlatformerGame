@@ -12,6 +12,7 @@
 				 background-repeat: repeat-x; }
 .end           { background-image: url("End.jpg");
 				 box-shadow: -4px -7px 8px white, 4px -7px 8px white; }
+.win		   { background-image: url("End.jpg"); }
 
 .actor  { position: absolute;  }
 .player { background-image: url("Player.png"); }

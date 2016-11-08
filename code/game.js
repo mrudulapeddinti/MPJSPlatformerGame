@@ -45,6 +45,8 @@ function Level(plan) {
 		fieldType = "portal";
 	  else if (ch == "e")
 		fieldType = "end";
+	  else if (ch == "w")
+		fieldType = "win";
 
       // "Push" the fieldType, which is a string, onto the gridLine array (at the end).
       gridLine.push(fieldType);
@@ -473,8 +475,11 @@ function runGame(plans, Display) {
     // Create a new level using the nth element of array plans
     // Pass in a reference to Display function, DOMDisplay (in index.html).
     runLevel(new Level(plans[n]), Display, function(status) {
-		if (status == "lost")
+		if (status == "lost") {
 			startLevel(n);
+			jumpSpeed = 17;
+			gravity = 30;
+		}
 		else if (n < plans.length - 1) {
 			startLevel(n + 1);
 			jumpSpeed = 17;
